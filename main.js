@@ -193,11 +193,11 @@ class KoreanNews extends HTMLElement {
 
   connectedCallback() {
     const news = [
-      { title: '중동 사태 장기화 우려에 국제유가 급등... WTI 100달러 육박', link: 'https://kr.investing.com/news/commodities-news/article-1082531', source: '인베스팅닷컴' },
-      { title: "\'터보퀀트(TurboQuant)\' 쇼크로 메모리 반도체주 급락... 삼성전자·SK하이닉스 약세", link: 'https://kr.investing.com/news/stock-market-news/article-1082532', source: '인베스팅닷컴' },
-      { title: '코스피, 중동 휴전 실망감에 하락 마감... 투자심리 위축', link: 'https://kr.investing.com/news/economy/article-1082533', source: '인베스팅닷컴' },
-      { title: '금 가격 하락 전망 대두... BofA "향후 3,700달러 선까지 조정 가능성"', link: 'https://kr.investing.com/news/commodities-news/article-1082534', source: '인베스팅닷컴' },
-      { title: '트럼프 행정부, 러시아 에너지 제재 강화 발표... 글로벌 시장 불확실성 증대', link: 'https://kr.investing.com/news/world-news/article-1082535', source: '인베스팅닷컴' }
+      { title: '호르무즈 해협 차질이 글로벌 농산물 가격에 미치는 영향', link: 'https://kr.investing.com/news/economy/article-1111115', source: '인베스팅닷컴' },
+      { title: '미중 기술 전쟁: 글로벌 양자컴퓨팅 경쟁의 승자는?', link: 'https://kr.investing.com/news/economy/article-1111114', source: '인베스팅닷컴' },
+      { title: '머스크의 테라팹 계획, TSMC에 미치는 영향 제한적일 전망', link: 'https://kr.investing.com/news/economy/article-1111111', source: '인베스팅닷컴' },
+      { title: '뱅크오브아메리카, 주식 급등 전 약세 함정 위험 경고', link: 'https://kr.investing.com/news/economy/article-1111112', source: '인베스팅닷컴' },
+      { title: '사우디 동서 파이프라인, 호르무즈 차질 속 일 700만 배럴 달성', link: 'https://kr.investing.com/news/economy/article-1111113', source: '인베스팅닷컴' }
     ];
 
     this.shadowRoot.innerHTML = `
