@@ -3,34 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>해외선물 전문가의 주요 체크리스트</title>
+  <title>해외선물 전문가의 주요 체크리스트 - Pro</title>
   <link href='/style.css' rel='stylesheet'>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
     <checklist-header></checklist-header>
     
     <main class="dashboard-grid">
-      <section class="section-market">
-        <h2>실시간 시장 데이터</h2>
-        <div class="market-cards">
-          <market-card type="rate" label="USD/KRW" value="1,340.50" trend="up"></market-card>
-          <market-card type="rate" label="EUR/USD" value="1.0820" trend="down"></market-card>
-          <market-card type="gold" label="Gold Futures" value="2,185.30" trend="up"></market-card>
-        </div>
-      </section>
+      <div class="main-column">
+        <section class="section-market">
+          <h2>시장 요약 및 변동성</h2>
+          <div class="asset-grid">
+            <asset-card type="currency" symbol="USD/KRW" label="원/달러 환율" value="1,348.50" trend="up" points="1340,1342,1338,1345,1344,1347,1348.5"></asset-card>
+            <asset-card type="commodity" symbol="XAU/USD" label="금 선물 (Gold/USD)" value="2,185.30" trend="up" points="2160,2165,2170,2168,2175,2180,2185.3"></asset-card>
+            <asset-card type="index" symbol="NDX 100" label="나스닥 100 지수" value="18,339.44" trend="down" points="18450,18420,18480,18400,18380,18350,18339.4"></asset-card>
+          </div>
+        </section>
 
-      <section class="section-calendar">
-        <h2>주요 지표 발표 일정</h2>
-        <economic-calendar></economic-calendar>
-      </section>
+        <section class="section-news">
+          <h2>주요 글로벌 마켓 뉴스 (TOP 5)</h2>
+          <korean-news></korean-news>
+        </section>
+      </div>
+
+      <aside class="side-column">
+        <section class="section-calendar">
+          <h2>미국 주요 지표 발표 일정</h2>
+          <us-indicators></us-indicators>
+        </section>
+      </aside>
     </main>
 
     <footer class="app-footer">
-      <p>&copy; 2026 Global Futures Expert. All rights reserved.</p>
+      <p>&copy; 2026 Global Futures Expert Pro. All rights reserved.</p>
     </footer>
   </div>
 

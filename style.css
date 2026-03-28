@@ -3,12 +3,13 @@
   --secondary: oklch(75% 0.1 200);
   --up: oklch(65% 0.15 150);
   --down: oklch(65% 0.15 30);
-  --bg: oklch(15% 0.02 250);
-  --card-bg: oklch(20% 0.03 250);
+  --bg: oklch(12% 0.02 250);
+  --card-bg: oklch(18% 0.03 250);
+  --card-hover: oklch(22% 0.04 250);
   --text: oklch(95% 0.01 250);
-  --text-dim: oklch(75% 0.01 250);
+  --text-dim: oklch(70% 0.01 250);
   --border: oklch(25% 0.04 250);
-  --shadow: 0 10px 30px -10px oklch(0% 0 0 / 50%);
+  --shadow: 0 12px 40px -12px oklch(0% 0 0 / 60%);
   --font-main: 'Inter', 'Noto Sans KR', sans-serif;
 }
 
@@ -20,55 +21,76 @@
 
 body {
   background-color: var(--bg);
-  background-image: radial-gradient(circle at 50% 50%, oklch(25% 0.04 250) 0%, var(--bg) 100%);
+  background-image: radial-gradient(circle at 0% 0%, oklch(20% 0.05 250 / 40%) 0%, transparent 50%),
+                    radial-gradient(circle at 100% 100%, oklch(20% 0.05 30 / 20%) 0%, transparent 50%);
   color: var(--text);
   font-family: var(--font-main);
   min-height: 100vh;
   line-height: 1.6;
-  padding: 2rem 1rem;
+  padding: 2.5rem 1.5rem;
 }
 
 .container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 800;
   margin-bottom: 1.5rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+h2::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 1.4rem;
+  background: var(--primary);
+  border-radius: 4px;
 }
 
 .dashboard-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 3rem;
-  margin-top: 2rem;
+  gap: 2.5rem;
+  margin-top: 1rem;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1100px) {
   .dashboard-grid {
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 2fr 1fr;
   }
 }
 
-.market-cards {
+.asset-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .asset-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  }
 }
 
 .app-footer {
-  margin-top: 4rem;
-  padding-top: 2rem;
+  margin-top: 5rem;
+  padding: 2.5rem 0;
   border-top: 1px solid var(--border);
   color: var(--text-dim);
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
 }
 
 /* Base Web Component Styling */
-market-card, economic-calendar, checklist-header {
+asset-card, us-indicators, checklist-header, korean-news {
   display: block;
 }

@@ -1,5 +1,5 @@
 /**
- * Web Components for Global Futures Expert's Key Checklist
+ * Web Components for Global Futures Expert's Key Checklist Pro
  */
 
 // Header Component
@@ -12,37 +12,22 @@ class ChecklistHeader extends HTMLElement {
   connectedCallback() {
     this.shadowRoot.innerHTML = `
       <style>
-        :host {
-          display: block;
-          margin-bottom: 3rem;
-        }
-        header {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
+        :host { display: block; margin-bottom: 4rem; }
+        header { display: flex; flex-direction: column; gap: 0.5rem; }
         h1 {
           font-size: clamp(2rem, 5vw, 3.5rem);
           font-weight: 800;
-          letter-spacing: -0.04em;
-          background: linear-gradient(to right, oklch(95% 0.01 250), oklch(65% 0.15 250));
+          letter-spacing: -0.05em;
+          background: linear-gradient(135deg, oklch(95% 0.01 250), oklch(65% 0.15 250));
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
-        .tagline {
-          color: var(--text-dim, #aaa);
-          font-size: 1.1rem;
-          font-weight: 400;
-        }
-        .date {
-          margin-top: 1rem;
-          font-family: monospace;
-          color: oklch(65% 0.15 250);
-        }
+        .tagline { color: var(--text-dim, #aaa); font-size: 1.2rem; font-weight: 400; }
+        .date { margin-top: 1.5rem; font-family: monospace; color: oklch(65% 0.15 250); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
       </style>
       <header>
-        <h1>해외선물 전문가의 주요 체크리스트</h1>
-        <p class="tagline">글로벌 금융 시장의 핵심 데이터를 실시간으로 모니터링하세요.</p>
+        <h1>해외선물 전문가 체크리스트 Pro</h1>
+        <p class="tagline">나스닥, 금 선물 및 환율 변동 추이를 실시간으로 분석하세요.</p>
         <p class="date">${new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' })}</p>
       </header>
     `;
@@ -50,72 +35,106 @@ class ChecklistHeader extends HTMLElement {
 }
 customElements.define('checklist-header', ChecklistHeader);
 
-// Market Card Component
-class MarketCard extends HTMLElement {
+// Asset Card with Chart Component
+class AssetCard extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
   }
 
   connectedCallback() {
+    const symbol = this.getAttribute('symbol');
     const label = this.getAttribute('label');
     const value = this.getAttribute('value');
     const trend = this.getAttribute('trend');
-    const type = this.getAttribute('type');
+    const points = this.getAttribute('points').split(',').map(Number);
 
     this.shadowRoot.innerHTML = `
       <style>
         .card {
-          background: oklch(20% 0.03 250);
+          background: oklch(18% 0.03 250);
           border: 1px solid oklch(25% 0.04 250);
           border-radius: 1.5rem;
           padding: 1.5rem;
           display: flex;
           flex-direction: column;
-          gap: 0.75rem;
+          gap: 1.25rem;
           box-shadow: 0 10px 30px -10px oklch(0% 0 0 / 50%);
-          transition: transform 0.2s ease, border-color 0.2s ease;
+          transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          position: relative;
+          overflow: hidden;
         }
         .card:hover {
-          transform: translateY(-4px);
-          border-color: oklch(65% 0.15 250 / 30%);
+          transform: translateY(-8px);
+          border-color: oklch(65% 0.15 250 / 40%);
+          background: oklch(20% 0.04 250);
         }
-        .label {
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: oklch(75% 0.01 250);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-        .value {
-          font-size: 1.5rem;
-          font-weight: 800;
-          font-family: 'Inter', sans-serif;
-        }
+        .info { display: flex; justify-content: space-between; align-items: flex-start; }
+        .label-group { display: flex; flex-direction: column; gap: 0.25rem; }
+        .symbol { font-size: 0.75rem; font-weight: 700; color: oklch(65% 0.15 250); letter-spacing: 0.1em; }
+        .label { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; }
+        .value { font-size: 1.75rem; font-weight: 800; font-family: 'Inter', sans-serif; }
         .trend {
-          font-size: 0.85rem;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 0.25rem;
+          font-size: 0.9rem;
+          font-weight: 700;
+          padding: 0.25rem 0.75rem;
+          border-radius: 2rem;
         }
-        .trend.up { color: oklch(65% 0.15 150); }
-        .trend.down { color: oklch(65% 0.15 30); }
+        .trend.up { background: oklch(65% 0.15 150 / 15%); color: oklch(65% 0.15 150); }
+        .trend.down { background: oklch(65% 0.15 30 / 15%); color: oklch(65% 0.15 30); }
+        canvas { width: 100% !important; height: 100px !important; margin-top: 1rem; }
       </style>
       <div class="card">
-        <span class="label">${label}</span>
-        <span class="value">${value}</span>
-        <span class="trend ${trend}">
-          ${trend === 'up' ? '▲ 상승' : '▼ 하락'}
-        </span>
+        <div class="info">
+          <div class="label-group">
+            <span class="symbol">${symbol}</span>
+            <span class="label">${label}</span>
+          </div>
+          <span class="trend ${trend}">${trend === 'up' ? '▲' : '▼'}</span>
+        </div>
+        <div class="value">${value}</div>
+        <canvas id="chart"></canvas>
       </div>
     `;
+
+    this.renderChart(points, trend);
+  }
+
+  renderChart(points, trend) {
+    const ctx = this.shadowRoot.getElementById('chart').getContext('2d');
+    const color = trend === 'up' ? 'rgba(50, 200, 150, 1)' : 'rgba(255, 80, 80, 1)';
+    const bgColor = trend === 'up' ? 'rgba(50, 200, 150, 0.1)' : 'rgba(255, 80, 80, 0.1)';
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['', '', '', '', '', '', ''],
+        datasets: [{
+          data: points,
+          borderColor: color,
+          borderWidth: 3,
+          pointRadius: 0,
+          tension: 0.4,
+          fill: true,
+          backgroundColor: bgColor
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        }
+      }
+    });
   }
 }
-customElements.define('market-card', MarketCard);
+customElements.define('asset-card', AssetCard);
 
-// Economic Calendar Component
-class EconomicCalendar extends HTMLElement {
+// US Indicators Component
+class UsIndicators extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -123,73 +142,101 @@ class EconomicCalendar extends HTMLElement {
 
   connectedCallback() {
     const events = [
-      { date: '2026-03-28 21:30', name: '미국 근원 개인소비지출(PCE) 물가지수', importance: 'high' },
-      { date: '2026-03-31 10:30', name: '중국 제조업 구매관리자지수(PMI)', importance: 'medium' },
-      { date: '2026-04-03 21:30', name: '미국 비농업 고용지수 (Non-Farm Payrolls)', importance: 'high' }
+      { date: '03-28 21:30', name: '미국 근원 개인소비지출(PCE) 물가지수', importance: 'high' },
+      { date: '04-01 23:00', name: '미국 ISM 제조업 구매관리자지수(PMI)', importance: 'high' },
+      { date: '04-02 21:15', name: '미국 ADP 비농업 부문 고용 변화', importance: 'medium' },
+      { date: '04-03 21:30', name: '미국 비농업 고용지수 (NFP) & 실업률', importance: 'high' },
+      { date: '04-10 21:30', name: '미국 소비자물가지수(CPI) 발표', importance: 'high' }
     ];
 
     this.shadowRoot.innerHTML = `
       <style>
-        .calendar-list {
-          display: flex;
-          flex-direction: column;
-          gap: 1rem;
-        }
-        .event-item {
-          background: oklch(18% 0.02 250);
+        .list { display: flex; flex-direction: column; gap: 1rem; }
+        .item {
+          background: oklch(16% 0.02 250);
           border: 1px solid oklch(25% 0.04 250);
-          border-radius: 1rem;
+          border-radius: 1.25rem;
           padding: 1.25rem;
           display: grid;
           grid-template-columns: auto 1fr auto;
           align-items: center;
-          gap: 1.5rem;
+          gap: 1.25rem;
+          transition: background 0.2s ease;
         }
-        .date-box {
-          text-align: center;
-          padding-right: 1.5rem;
-          border-right: 1px solid oklch(25% 0.04 250);
-        }
-        .time {
-          font-family: monospace;
-          color: oklch(65% 0.15 250);
-          font-size: 0.85rem;
-        }
-        .name {
-          font-weight: 600;
-          font-size: 1rem;
-        }
-        .importance {
-          padding: 0.25rem 0.75rem;
-          border-radius: 2rem;
-          font-size: 0.75rem;
-          font-weight: 700;
-          text-transform: uppercase;
-        }
-        .importance.high {
-          background: oklch(65% 0.15 30 / 20%);
-          color: oklch(65% 0.15 30);
-          border: 1px solid oklch(65% 0.15 30 / 40%);
-        }
-        .importance.medium {
-          background: oklch(65% 0.15 80 / 20%);
-          color: oklch(65% 0.15 80);
-          border: 1px solid oklch(65% 0.15 80 / 40%);
-        }
+        .item:hover { background: oklch(20% 0.03 250); }
+        .date { font-family: monospace; color: oklch(65% 0.15 250); font-weight: 700; text-align: center; border-right: 1px solid var(--border); padding-right: 1.25rem; }
+        .name { font-weight: 600; font-size: 0.95rem; }
+        .badge { padding: 0.2rem 0.6rem; border-radius: 0.5rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .high { background: oklch(65% 0.15 30 / 15%); color: oklch(65% 0.15 30); }
+        .medium { background: oklch(65% 0.15 80 / 15%); color: oklch(65% 0.15 80); }
       </style>
-      <div class="calendar-list">
-        ${events.map(event => `
-          <div class="event-item">
-            <div class="date-box">
-              <div class="time">${event.date.split(' ')[1]}</div>
-              <div class="day">${event.date.split(' ')[0].split('-').slice(1).join('/')}</div>
-            </div>
-            <div class="name">${event.name}</div>
-            <div class="importance ${event.importance}">${event.importance === 'high' ? '중요' : '보통'}</div>
+      <div class="list">
+        ${events.map(ev => `
+          <div class="item">
+            <div class="date">${ev.date}</div>
+            <div class="name">${ev.name}</div>
+            <div class="badge ${ev.importance}">${ev.importance === 'high' ? 'High' : 'Med'}</div>
           </div>
         `).join('')}
       </div>
     `;
   }
 }
-customElements.define('economic-calendar', EconomicCalendar);
+customElements.define('us-indicators', UsIndicators);
+
+// Korean News Component
+class KoreanNews extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+  }
+
+  connectedCallback() {
+    const news = [
+      { title: '뉴욕증시, PCE 발표 앞두고 혼조세... 나스닥 0.1% 하락 마감', link: '#', source: '연합인포맥스' },
+      { title: '금 가격 사상 최고치 경신... 인플레이션 우려 및 지정학적 리스크 영향', link: '#', source: '한국경제' },
+      { title: '원·달러 환율 1,340원대 후반... 달러 강세에 상방 압력 지속', link: '#', source: '매일경제' },
+      { title: '나스닥 100, AI 테크주 숨고르기에 조정 장세 진입하나', link: '#', source: '머니투데이' },
+      { title: '美 고용지표 대기... 선물 시장 변동성 확대 주의보', link: '#', source: '파이낸셜뉴스' }
+    ];
+
+    this.shadowRoot.innerHTML = `
+      <style>
+        .news-container { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .news-card {
+          background: oklch(18% 0.03 250);
+          border: 1px solid oklch(25% 0.04 250);
+          border-radius: 1.25rem;
+          padding: 1.5rem;
+          text-decoration: none;
+          color: inherit;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: all 0.2s ease;
+        }
+        .news-card:hover {
+          background: oklch(22% 0.04 250);
+          border-color: var(--primary);
+          transform: translateX(4px);
+        }
+        .content { display: flex; flex-direction: column; gap: 0.5rem; }
+        .source { font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase; }
+        .title { font-size: 1.1rem; font-weight: 700; line-height: 1.4; }
+        .arrow { color: var(--text-dim); font-size: 1.2rem; }
+      </style>
+      <div class="news-container">
+        ${news.map((item, idx) => `
+          <a href="${item.link}" class="news-card">
+            <div class="content">
+              <span class="source">${idx + 1}. ${item.source}</span>
+              <span class="title">${item.title}</span>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }
+}
+customElements.define('korean-news', KoreanNews);
