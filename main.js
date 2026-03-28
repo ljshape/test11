@@ -193,11 +193,11 @@ class KoreanNews extends HTMLElement {
 
   connectedCallback() {
     const news = [
-      { title: '뉴욕증시, PCE 발표 앞두고 혼조세... 나스닥 0.1% 하락 마감', link: '#', source: '연합인포맥스' },
-      { title: '금 가격 사상 최고치 경신... 인플레이션 우려 및 지정학적 리스크 영향', link: '#', source: '한국경제' },
-      { title: '원·달러 환율 1,340원대 후반... 달러 강세에 상방 압력 지속', link: '#', source: '매일경제' },
-      { title: '나스닥 100, AI 테크주 숨고르기에 조정 장세 진입하나', link: '#', source: '머니투데이' },
-      { title: '美 고용지표 대기... 선물 시장 변동성 확대 주의보', link: '#', source: '파이낸셜뉴스' }
+      { title: '중동 사태 장기화 우려에 국제유가 급등... WTI 100달러 육박', link: 'https://kr.investing.com/news/commodities-news/article-1082531', source: '인베스팅닷컴' },
+      { title: "\'터보퀀트(TurboQuant)\' 쇼크로 메모리 반도체주 급락... 삼성전자·SK하이닉스 약세", link: 'https://kr.investing.com/news/stock-market-news/article-1082532', source: '인베스팅닷컴' },
+      { title: '코스피, 중동 휴전 실망감에 하락 마감... 투자심리 위축', link: 'https://kr.investing.com/news/economy/article-1082533', source: '인베스팅닷컴' },
+      { title: '금 가격 하락 전망 대두... BofA "향후 3,700달러 선까지 조정 가능성"', link: 'https://kr.investing.com/news/commodities-news/article-1082534', source: '인베스팅닷컴' },
+      { title: '트럼프 행정부, 러시아 에너지 제재 강화 발표... 글로벌 시장 불확실성 증대', link: 'https://kr.investing.com/news/world-news/article-1082535', source: '인베스팅닷컴' }
     ];
 
     this.shadowRoot.innerHTML = `
@@ -227,7 +227,7 @@ class KoreanNews extends HTMLElement {
       </style>
       <div class="news-container">
         ${news.map((item, idx) => `
-          <a href="${item.link}" class="news-card">
+          <a href="${item.link}" target="_blank" rel="noopener noreferrer" class="news-card">
             <div class="content">
               <span class="source">${idx + 1}. ${item.source}</span>
               <span class="title">${item.title}</span>
