@@ -1,14 +1,39 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
+  <title>해외선물 전문가의 주요 체크리스트</title>
   <link href='/style.css' rel='stylesheet'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <div class="container">
+    <checklist-header></checklist-header>
+    
+    <main class="dashboard-grid">
+      <section class="section-market">
+        <h2>실시간 시장 데이터</h2>
+        <div class="market-cards">
+          <market-card type="rate" label="USD/KRW" value="1,340.50" trend="up"></market-card>
+          <market-card type="rate" label="EUR/USD" value="1.0820" trend="down"></market-card>
+          <market-card type="gold" label="Gold Futures" value="2,185.30" trend="up"></market-card>
+        </div>
+      </section>
+
+      <section class="section-calendar">
+        <h2>주요 지표 발표 일정</h2>
+        <economic-calendar></economic-calendar>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 Global Futures Expert. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script defer type="module" src="/main.js"></script>
 </body>
 </html>
