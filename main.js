@@ -191,15 +191,72 @@ class KoreanNews extends HTMLElement {
     this.attachShadow({ mode: 'open' });
   }
 
-  connectedCallback() {
-    const news = [
-      { title: '호르무즈 해협 차질이 글로벌 농산물 가격에 미치는 영향', link: 'https://kr.investing.com/news/economy/article-1111115', source: '인베스팅닷컴' },
-      { title: '미중 기술 전쟁: 글로벌 양자컴퓨팅 경쟁의 승자는?', link: 'https://kr.investing.com/news/economy/article-1111114', source: '인베스팅닷컴' },
-      { title: '머스크의 테라팹 계획, TSMC에 미치는 영향 제한적일 전망', link: 'https://kr.investing.com/news/economy/article-1111111', source: '인베스팅닷컴' },
-      { title: '뱅크오브아메리카, 주식 급등 전 약세 함정 위험 경고', link: 'https://kr.investing.com/news/economy/article-1111112', source: '인베스팅닷컴' },
-      { title: '사우디 동서 파이프라인, 호르무즈 차질 속 일 700만 배럴 달성', link: 'https://kr.investing.com/news/economy/article-1111113', source: '인베스팅닷컴' }
-    ];
+  async connectedCallback() {
+    this.renderLoading();
+    try {
+      const news = await this.fetchNews();
+      this.renderNews(news);
+    } catch (error) {
+      console.error('Failed to fetch news:', error);
+      this.renderError();
+    }
+  }
 
+  async fetchNews() {
+    // RSS to JSON converter to get real-time news from Investing.com KR
+    const rssUrl = encodeURIComponent('https://kr.investing.com/rss/news_285.rss'); // Global Economy News
+    const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`);
+    const data = await response.json();
+    
+    if (data.status !== 'ok') throw new Error('RSS conversion failed');
+    
+    return data.items.slice(0, 5).map(item => ({
+      title: this.decodeHtml(item.title),
+      link: item.link,
+      source: '인베스팅닷컴'
+    }));
+  }
+
+  decodeHtml(html) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  }
+
+  renderLoading() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        .loading {
+          padding: 2rem;
+          text-align: center;
+          color: var(--text-dim);
+          font-weight: 600;
+          background: oklch(18% 0.03 250);
+          border-radius: 1.25rem;
+          border: 1px solid oklch(25% 0.04 250);
+        }
+      </style>
+      <div class="loading">뉴스를 불러오는 중...</div>
+    `;
+  }
+
+  renderError() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        .error {
+          padding: 2rem;
+          text-align: center;
+          color: oklch(65% 0.15 30);
+          background: oklch(18% 0.03 30 / 10%);
+          border-radius: 1.25rem;
+          border: 1px dashed oklch(65% 0.15 30 / 30%);
+        }
+      </style>
+      <div class="error">뉴스를 불러오는 데 실패했습니다. 잠시 후 다시 시도해주세요.</div>
+    `;
+  }
+
+  renderNews(news) {
     this.shadowRoot.innerHTML = `
       <style>
         .news-container { display: grid; grid-template-columns: 1fr; gap: 1rem; }
@@ -213,17 +270,19 @@ class KoreanNews extends HTMLElement {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          transition: all 0.2s ease;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .news-card:hover {
           background: oklch(22% 0.04 250);
-          border-color: var(--primary);
-          transform: translateX(4px);
+          border-color: oklch(65% 0.15 250);
+          transform: translateX(8px);
+          box-shadow: 0 10px 20px -10px oklch(0% 0 0 / 50%);
         }
         .content { display: flex; flex-direction: column; gap: 0.5rem; }
-        .source { font-size: 0.75rem; color: var(--primary); font-weight: 700; text-transform: uppercase; }
-        .title { font-size: 1.1rem; font-weight: 700; line-height: 1.4; }
-        .arrow { color: var(--text-dim); font-size: 1.2rem; }
+        .source { font-size: 0.75rem; color: oklch(65% 0.15 250); font-weight: 700; text-transform: uppercase; }
+        .title { font-size: 1.1rem; font-weight: 700; line-height: 1.4; letter-spacing: -0.01em; }
+        .arrow { color: var(--text-dim); font-size: 1.2rem; transition: transform 0.2s ease; }
+        .news-card:hover .arrow { transform: translateX(4px); color: oklch(65% 0.15 250); }
       </style>
       <div class="news-container">
         ${news.map((item, idx) => `
@@ -240,3 +299,4 @@ class KoreanNews extends HTMLElement {
   }
 }
 customElements.define('korean-news', KoreanNews);
+
